@@ -21,7 +21,7 @@ export const deals = [
   },
   {
     id: 3,
-    title: "GHAZI SPECIAL PLATTER FULL",
+    title: "BHANDU KHAN SPECIAL PLATTER FULL",
     price: "75.00 SAR",
     badgePrice: "75\nSAR",
     posterType: "platter",
@@ -30,7 +30,7 @@ export const deals = [
   },
   {
     id: 4,
-    title: "GHAZI SPECIAL PLATTER HALF",
+    title: "BHANDU KHAN SPECIAL PLATTER HALF",
     price: "40.00 SAR",
     badgePrice: "40\nSAR",
     posterType: "platter",

@@ -73,11 +73,11 @@ export const menuCatalog = {
   deals: [
     { id: "d1", title: "Half Daigi Steam With Rice+Drink", arabicTitle: "", price: "22.00 SAR", image: foodImages.dealHalf, isVeg: false },
     { id: "d2", title: "Full Daigi Steam With Rice+Drink", arabicTitle: "", price: "40.00 SAR", image: foodImages.dealFull, isVeg: false },
-    { id: "d3", title: "GHAZI SPECIAL PLATTER FULL", arabicTitle: "", price: "75.00 SAR", image: foodImages.dealPlatterFull, isVeg: false },
-    { id: "d4", title: "GHAZI SPECIAL PLATTER HALF", arabicTitle: "", price: "40.00 SAR", image: foodImages.dealPlatterHalf, isVeg: false },
+    { id: "d3", title: "BHANDU KHAN SPECIAL PLATTER FULL", arabicTitle: "", price: "75.00 SAR", image: foodImages.dealPlatterFull, isVeg: false },
+    { id: "d4", title: "BHANDU KHAN SPECIAL PLATTER HALF", arabicTitle: "", price: "40.00 SAR", image: foodImages.dealPlatterHalf, isVeg: false },
   ],
   barbeque: [
-    { id: "b1", title: "GHAZI SPECIAL MIX GRILL", arabicTitle: "", price: "60.00 SAR", image: foodImages.b1, isVeg: false },
+    { id: "b1", title: "BHANDU KHAN SPECIAL MIX GRILL", arabicTitle: "", price: "60.00 SAR", image: foodImages.b1, isVeg: false },
     { id: "b2", title: "SAUDI FISH BOTTI", arabicTitle: "", price: "40.00 SAR", image: foodImages.b2, isVeg: false },
     { id: "b3", title: "GRILL PRAWN", arabicTitle: "", price: "50.00 SAR", image: foodImages.b3, isVeg: false },
     { id: "b4", title: "CHICKEN MALAI BOTTI", arabicTitle: "", price: "30.00 SAR", image: foodImages.b4, isVeg: false },
@@ -97,7 +97,7 @@ export const menuCatalog = {
     { id: "j4", title: "THANDI LASSI SALTY", arabicTitle: "لبن رائب بارد", price: "5.00 SAR", image: foodImages.j4, isVeg: true },
   ],
   chowmien: [
-    { id: "c1", title: "GHAZI MIX CHOWMIEN", arabicTitle: "غازي مشكلة شومين", price: "42.00 SAR", image: foodImages.c1, isVeg: false },
+    { id: "c1", title: "BHANDU KHAN MIX CHOWMIEN", arabicTitle: "بندو خان مشكلة شومين", price: "42.00 SAR", image: foodImages.c1, isVeg: false },
     { id: "c2", title: "PRAWN CHOWMIEN", arabicTitle: "روبيان شومين", price: "40.00 SAR", image: foodImages.c2, isVeg: false },
     { id: "c3", title: "FISH CHOWMIEN", arabicTitle: "سمك شومين", price: "40.00 SAR", image: foodImages.c3, isVeg: false },
     { id: "c4", title: "CHICKEN CHOWMIEN", arabicTitle: "دجاج شومين", price: "35.00 SAR", image: foodImages.c4, isVeg: false },

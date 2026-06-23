@@ -3,6 +3,7 @@ import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import { IoMailOutline } from "react-icons/io5";
 import { MdHeadsetMic } from "react-icons/md";
 import { Link } from "react-router-dom";
+import BrandIcon from "./BrandIcon";
 
 const usefulLinks = [
   { label: "Home", to: "/" },
@@ -20,32 +21,9 @@ function FooterLogo() {
   return (
     <a href="/" className="inline-flex items-center gap-3">
       <span className="text-[22px] font-extrabold uppercase tracking-tight text-white">
-        GHAZI RESTAURANT
+        BHANDU KHAN
       </span>
-      <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm">
-        <svg viewBox="0 0 64 64" className="h-[52px] w-[52px]" aria-hidden="true">
-          <circle cx="32" cy="32" r="32" fill="#fff" />
-          <circle cx="32" cy="28" r="14" fill="#fcd9b6" />
-          <ellipse cx="32" cy="48" rx="18" ry="12" fill="#fff" />
-          <ellipse cx="32" cy="46" rx="16" ry="10" fill="#f97316" />
-          <circle cx="26" cy="26" r="2" fill="#1a2340" />
-          <circle cx="38" cy="26" r="2" fill="#1a2340" />
-          <path
-            d="M28 32c2 2 6 2 8 0"
-            fill="none"
-            stroke="#1a2340"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M18 18c4-6 10-8 14-8s10 2 14 8"
-            fill="#fff"
-            stroke="#e8eaef"
-            strokeWidth="1"
-          />
-          <ellipse cx="32" cy="14" rx="12" ry="6" fill="#fff" />
-        </svg>
-      </div>
+      <BrandIcon size={52} className="shrink-0 rounded-2xl shadow-sm" />
     </a>
   );
 }

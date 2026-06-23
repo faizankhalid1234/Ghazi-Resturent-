@@ -49,7 +49,7 @@ function Login() {
   return (
     <AuthLayout
       title="Welcome Back"
-      subtitle="Log in to order from GHAZI RESTAURANT"
+      subtitle="Log in to order from BHANDU KHAN"
       footer={
         <>
           Don&apos;t have an account?{" "}

@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "pwa-192.png", "pwa-512.png", "apple-touch-icon.png"],
       manifest: {
-        name: "GHAZI RESTAURANT | مطعم غازي",
-        short_name: "Ghazi",
+        name: "BHANDU KHAN | بندو خان",
+        short_name: "Bhandu Khan",
         description: "Order delicious Saudi & Arabic food online — deals, menu, cart & checkout.",
         theme_color: "#f97316",
         background_color: "#f7f7fb",

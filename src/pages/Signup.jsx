@@ -71,7 +71,7 @@ function Signup() {
   return (
     <AuthLayout
       title="Create Account"
-      subtitle="Sign up to order delicious Arabic meals"
+      subtitle="Sign up to order from BHANDU KHAN"
       footer={
         <>
           Already have an account?{" "}

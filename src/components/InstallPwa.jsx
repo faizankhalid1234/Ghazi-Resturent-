@@ -36,7 +36,7 @@ function InstallPwa() {
           G
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[14px] font-bold text-navy">Install Ghazi App</p>
+          <p className="text-[14px] font-bold text-navy">Install Bhandu Khan App</p>
           <p className="mt-0.5 text-[12px] text-gray-muted">
             Add to home screen for fast ordering like a native app.
           </p>
