@@ -7,6 +7,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProductModal from "./components/ProductModal";
 import CartDrawer from "./components/CartDrawer";
+import InstallPwa from "./components/InstallPwa";
+import PwaUpdateToast from "./components/PwaUpdateToast";
 import Home from "./pages/Home";
 
 const Menu = lazy(() => import("./pages/Menu"));
@@ -50,6 +52,8 @@ function App() {
                 </Routes>
               </Suspense>
               <Footer />
+              <InstallPwa />
+              <PwaUpdateToast />
             </div>
           </BrowserRouter>
         </CartProvider>
