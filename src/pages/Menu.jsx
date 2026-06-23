@@ -5,20 +5,24 @@ import { FaLeaf } from "react-icons/fa";
 import MenuCategoryStrip from "../components/MenuCategoryStrip";
 import MenuItemCard from "../components/MenuItemCard";
 import MenuLoader from "../components/MenuLoader";
-import { menuCategories, menuCatalog } from "../data/menuCatalog";
-import { menuSheets } from "../data/menuSheets";
+import { useMenu } from "../context/MenuContext";
 
 function Menu() {
+  const { menuCategories, menuCatalog, loading, error } = useMenu();
   const [activeCategory, setActiveCategory] = useState("ramadan");
   const [displayCategory, setDisplayCategory] = useState("ramadan");
   const [dietFilter, setDietFilter] = useState("all");
   const [viewMode, setViewMode] = useState("grid");
-  const [loading, setLoading] = useState(false);
-  const [slideIn, setSlideIn] = useState(true);
+  const [switching, setSwitching] = useState(false);
   const timerRef = useRef(null);
 
-  const category = menuCategories.find((c) => c.id === displayCategory);
-  const items = menuCatalog[displayCategory] || [];
+  useEffect(() => {
+    if (menuCategories.length && !menuCatalog[activeCategory]) {
+      const first = menuCategories[0].id;
+      setActiveCategory(first);
+      setDisplayCategory(first);
+    }
+  }, [menuCategories, menuCatalog, activeCategory]);
 
   useEffect(() => {
     return () => {
@@ -27,15 +31,27 @@ function Menu() {
   }, []);
 
   useEffect(() => {
-    Object.values(menuSheets).forEach((cfg) => {
-      const img = new Image();
-      img.src = cfg.sheet;
-    });
-  }, []);
-
-  useEffect(() => {
     setDietFilter("all");
   }, [displayCategory]);
+
+  if (loading) {
+    return (
+      <main className="mx-auto max-w-[1320px] px-4 py-20">
+        <MenuLoader />
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="mx-auto max-w-[1320px] px-4 py-20 text-center">
+        <p className="text-red-500">{error}</p>
+      </main>
+    );
+  }
+
+  const category = menuCategories.find((c) => c.id === displayCategory);
+  const items = menuCatalog[displayCategory] || [];
 
   const filtered = items.filter((item) => {
     if (dietFilter === "veg") return item.isVeg;
@@ -48,27 +64,17 @@ function Menu() {
     : category?.title;
 
   const handleCategorySelect = (id) => {
-    if (id === activeCategory || loading) return;
+    if (id === activeCategory || switching) return;
 
     setActiveCategory(id);
-    setLoading(true);
-    setSlideIn(false);
+    setSwitching(true);
 
     if (timerRef.current) clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(() => {
       setDisplayCategory(id);
-      setLoading(false);
-      requestAnimationFrame(() => setSlideIn(true));
-    }, 480);
-  };
-
-  const handleFilterChange = (filter) => {
-    setSlideIn(false);
-    setTimeout(() => {
-      setDietFilter(filter);
-      setSlideIn(true);
-    }, 200);
+      setSwitching(false);
+    }, 120);
   };
 
   return (
@@ -77,112 +83,98 @@ function Menu() {
         categories={menuCategories}
         activeId={activeCategory}
         onSelect={handleCategorySelect}
-        disabled={loading}
+        disabled={switching}
       />
 
       <div
-        className={`mt-5 flex flex-wrap gap-2.5 transition-opacity duration-300 ${
-          loading ? "pointer-events-none opacity-50" : "opacity-100"
+        className={`mt-4 flex flex-wrap gap-2 transition-opacity duration-150 ${
+          switching ? "pointer-events-none opacity-50" : "opacity-100"
         }`}
       >
         <button
           type="button"
-          onClick={() => handleFilterChange("nonveg")}
-          className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+          onClick={() => setDietFilter("nonveg")}
+          className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition ${
             dietFilter === "nonveg"
               ? "bg-navy text-white"
               : "bg-[#eef0f4] text-navy hover:bg-gray-border"
           }`}
         >
-          <GiChickenLeg className="h-4 w-4" />
+          <GiChickenLeg className="h-3.5 w-3.5" />
           Non-Veg
         </button>
         <button
           type="button"
-          onClick={() => handleFilterChange("veg")}
-          className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+          onClick={() => setDietFilter("veg")}
+          className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition ${
             dietFilter === "veg"
               ? "bg-green-support text-white"
               : "bg-[#eef0f4] text-navy hover:bg-gray-border"
           }`}
         >
-          <FaLeaf className="h-4 w-4" />
+          <FaLeaf className="h-3.5 w-3.5" />
           Veg
         </button>
         {dietFilter !== "all" && (
           <button
             type="button"
-            onClick={() => handleFilterChange("all")}
-            className="rounded-full bg-orange-pale px-4 py-2 text-sm font-semibold text-orange"
+            onClick={() => setDietFilter("all")}
+            className="rounded-full bg-orange-pale px-3.5 py-1.5 text-[13px] font-semibold text-orange"
           >
             Show All
           </button>
         )}
       </div>
 
-      <div className="mt-7 flex items-center justify-between gap-4 border-b-2 border-orange/20 pb-4">
-        <h1
-          className={`text-[20px] font-extrabold uppercase tracking-wide text-orange transition-all duration-500 md:text-[24px] ${
-            slideIn ? "translate-x-0 opacity-100" : "-translate-x-4 opacity-0"
-          }`}
-        >
+      <div className="mt-5 flex items-center justify-between gap-4 border-b-2 border-orange/20 pb-3">
+        <h1 className="text-[18px] font-extrabold uppercase tracking-wide text-orange md:text-[22px]">
           {sectionTitle}
         </h1>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setViewMode("list")}
-            className={`flex h-9 w-9 items-center justify-center rounded-lg transition ${
+            className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
               viewMode === "list"
                 ? "bg-navy text-white"
                 : "bg-[#eef0f4] text-gray-muted hover:text-navy"
             }`}
             aria-label="List view"
           >
-            <BsListUl className="h-4 w-4" />
+            <BsListUl className="h-3.5 w-3.5" />
           </button>
           <button
             type="button"
             onClick={() => setViewMode("grid")}
-            className={`flex h-9 w-9 items-center justify-center rounded-lg transition ${
+            className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
               viewMode === "grid"
                 ? "bg-navy text-white"
                 : "bg-[#eef0f4] text-gray-muted hover:text-navy"
             }`}
             aria-label="Grid view"
           >
-            <BsGridFill className="h-4 w-4" />
+            <BsGridFill className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
 
-      <div className="relative mt-5 min-h-[280px] overflow-hidden">
-        {loading ? (
+      <div className="relative mt-4 min-h-[200px]">
+        {switching ? (
           <MenuLoader />
         ) : filtered.length > 0 ? (
           <div
-            className={`gap-4 transition-all duration-500 ease-out ${
+            className={`gap-3 ${
               viewMode === "grid"
                 ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
                 : "flex flex-col"
-            } ${
-              slideIn
-                ? "translate-x-0 opacity-100"
-                : "translate-x-10 opacity-0"
             }`}
           >
-            {filtered.map((item, i) => (
-              <div
-                key={item.id}
-                className="animate-[fadeSlideIn_0.45s_ease-out_both]"
-                style={{ animationDelay: `${i * 60}ms` }}
-              >
-                <MenuItemCard item={item} categoryId={displayCategory} />
-              </div>
+            {filtered.map((item) => (
+              <MenuItemCard key={item.id} item={item} />
             ))}
           </div>
         ) : (
-          <p className="mt-10 text-center text-gray-muted">
+          <p className="mt-8 text-center text-gray-muted">
             No items found for this filter.
           </p>
         )}

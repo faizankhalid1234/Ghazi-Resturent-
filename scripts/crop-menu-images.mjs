@@ -22,6 +22,8 @@ async function cropGridItems(sheetName, itemIds, config) {
     rowGap = 14,
     colGap = 16,
     imgSize = 118,
+    imgPadLeft = 14,
+    imgPadTop = 6,
     cardHeight,
   } = config;
 
@@ -33,9 +35,16 @@ async function cropGridItems(sheetName, itemIds, config) {
   for (let i = 0; i < itemIds.length; i++) {
     const row = Math.floor(i / cols);
     const col = i % cols;
-    const left = Math.round(col * (cardW + colGap));
-    const top = Math.round(header + row * (computedCardH + rowGap));
-    const size = Math.min(imgSize, Math.round(computedCardH), Math.round(cardW));
+    const cellLeft = col * (cardW + colGap);
+    const padLeft = col === 0 ? 56 : imgPadLeft;
+    const left = Math.round(cellLeft + padLeft);
+    const top = Math.round(header + row * (computedCardH + rowGap) + imgPadTop);
+    let size = Math.min(imgSize, Math.round(computedCardH), Math.round(cardW));
+    size = Math.min(size, W - left, H - top);
+    if (size < 40) {
+      console.warn(`⚠ skip ${itemIds[i]} — crop out of bounds (${left},${top})`);
+      continue;
+    }
 
     await sharp(sheetPath)
       .extract({ left, top, width: size, height: size })
@@ -56,6 +65,8 @@ async function cropDealsMenu() {
   const header = 44;
   const rowGap = 14;
   const colGap = 16;
+  const imgPadLeft = 14;
+  const imgPadTop = 6;
   const cols = 3;
   const cardH = (H - header - rowGap) / 2;
   const cardW = (W - colGap * 2) / 3;
@@ -65,11 +76,19 @@ async function cropDealsMenu() {
   for (let i = 0; i < ids.length; i++) {
     const row = Math.floor(i / cols);
     const col = i % cols;
-    const left = Math.round(col * (cardW + colGap));
-    const top = Math.round(header + row * (cardH + rowGap));
+    const cellLeft = col * (cardW + colGap);
+    const padLeft = col === 0 ? 56 : imgPadLeft;
+    const left = Math.round(cellLeft + padLeft);
+    const top = Math.round(header + row * (cardH + rowGap) + imgPadTop);
+    let size = Math.min(imgSize, Math.round(cardH), Math.round(cardW));
+    size = Math.min(size, W - left, H - top);
+    if (size < 40) {
+      console.warn(`⚠ skip ${ids[i]} — crop out of bounds`);
+      continue;
+    }
 
     await sharp(sheetPath)
-      .extract({ left, top, width: imgSize, height: imgSize })
+      .extract({ left, top, width: size, height: size })
       .resize(400, 400, { fit: "cover" })
       .jpeg({ quality: 92 })
       .toFile(path.join(outDir, `${ids[i]}.jpg`));
@@ -117,7 +136,7 @@ await cropGridItems(
 await cropGridItems(
   "juices.png",
   ["j1", "j2", "j3", "j4"],
-  { header: 50, rowGap: 14, colGap: 16, imgSize: 120 }
+  { header: 96, rowGap: 14, colGap: 16, imgSize: 120 }
 );
 
 await cropGridItems(
@@ -129,7 +148,7 @@ await cropGridItems(
 await cropGridItems(
   "shakes.png",
   ["s1", "s2", "s3"],
-  { header: 50, rowGap: 14, colGap: 16, imgSize: 120, cardHeight: 100 }
+  { header: 96, rowGap: 14, colGap: 16, imgSize: 100, cardHeight: 100 }
 );
 
 await cropGridItems(

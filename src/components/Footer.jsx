@@ -1,107 +1,147 @@
-import { FaFacebookF, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
-import Logo from "./Logo";
+import { useState } from "react";
+import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { IoMailOutline } from "react-icons/io5";
+import { MdHeadsetMic } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "Menu", href: "/menu" },
-  { label: "Offers", href: "/offers" },
-  { label: "About Us", href: "#" },
-  { label: "Contact", href: "#" },
+const usefulLinks = [
+  { label: "Home", to: "/" },
+  { label: "Menu", to: "/menu" },
+  { label: "Offers", to: "/offers" },
 ];
 
 const socialLinks = [
   { icon: FaFacebookF, href: "#", label: "Facebook" },
   { icon: FaInstagram, href: "#", label: "Instagram" },
-  { icon: FaTwitter, href: "#", label: "Twitter" },
-  { icon: FaWhatsapp, href: "https://wa.me/", label: "WhatsApp" },
+  { icon: FaYoutube, href: "#", label: "YouTube" },
 ];
 
-function Footer() {
+function FooterLogo() {
   return (
-    <footer className="mt-16 bg-navy text-white">
-      <div className="mx-auto max-w-[1320px] px-4 py-14 md:px-5 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Brand */}
-          <div>
-            <Logo variant="light" />
-            <p className="mt-4 text-sm leading-relaxed text-white/70">
-              مطعم غازي — Authentic Saudi & Arabic cuisine. Fresh platters, rice
-              deals, and family meals delivered to your door.
+    <a href="/" className="inline-flex items-center gap-3">
+      <span className="text-[22px] font-extrabold uppercase tracking-tight text-white">
+        GHAZI RESTAURANT
+      </span>
+      <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm">
+        <svg viewBox="0 0 64 64" className="h-[52px] w-[52px]" aria-hidden="true">
+          <circle cx="32" cy="32" r="32" fill="#fff" />
+          <circle cx="32" cy="28" r="14" fill="#fcd9b6" />
+          <ellipse cx="32" cy="48" rx="18" ry="12" fill="#fff" />
+          <ellipse cx="32" cy="46" rx="16" ry="10" fill="#f97316" />
+          <circle cx="26" cy="26" r="2" fill="#1a2340" />
+          <circle cx="38" cy="26" r="2" fill="#1a2340" />
+          <path
+            d="M28 32c2 2 6 2 8 0"
+            fill="none"
+            stroke="#1a2340"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <path
+            d="M18 18c4-6 10-8 14-8s10 2 14 8"
+            fill="#fff"
+            stroke="#e8eaef"
+            strokeWidth="1"
+          />
+          <ellipse cx="32" cy="14" rx="12" ry="6" fill="#fff" />
+        </svg>
+      </div>
+    </a>
+  );
+}
+
+function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    setEmail("");
+  };
+
+  return (
+    <footer className="mt-16 bg-[#f7941d] text-white">
+      <div className="mx-auto max-w-[1320px] px-5 py-10 md:px-8 md:py-12 lg:px-10">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8 lg:gap-12">
+          {/* Brand + Newsletter + Social */}
+          <div className="md:max-w-[360px]">
+            <FooterLogo />
+
+            <p className="mt-5 text-[13px] leading-relaxed text-white">
+              Subscribe to our newsletter to get latest updates
             </p>
-            <div className="mt-5 flex gap-3">
+
+            <form onSubmit={handleSubscribe} className="mt-3">
+              <div className="relative flex items-center">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address"
+                  className="h-[46px] w-full rounded-lg border-0 bg-white pr-[118px] pl-4 text-[13px] text-navy outline-none placeholder:text-gray-muted"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1.5 h-[36px] rounded-md bg-[#f7941d] px-4 text-[13px] font-semibold text-white transition hover:bg-[#e8850f]"
+                >
+                  Subscribe
+                </button>
+              </div>
+            </form>
+
+            <p className="mt-6 text-[13px] text-white">Follow Us On</p>
+            <div className="mt-3 flex gap-3">
               {socialLinks.map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-sm transition hover:bg-orange hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#f7941d] transition hover:scale-105"
                 >
-                  <Icon />
+                  <Icon className="text-[15px]" />
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-orange">
-              Quick Links
-            </h3>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
+          {/* Useful Links */}
+          <div className="md:pt-1">
+            <h3 className="text-[15px] font-bold text-white">Useful Links</h3>
+            <ul className="mt-4 space-y-2.5">
+              {usefulLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-white/70 transition hover:text-orange"
+                  <Link
+                    to={link.to}
+                    className="text-[13px] text-white/90 transition hover:text-white"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
           {/* Contact */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-orange">
-              Contact Info
-            </h3>
-            <ul className="space-y-2.5 text-sm text-white/70">
-              <li>Riyadh, Saudi Arabia</li>
-              <li>
-                <a href="tel:+966500000000" className="hover:text-orange">
-                  +966 50 000 0000
-                </a>
-              </li>
-              <li>
-                <a href="mailto:info@ghazirestaurant.com" className="hover:text-orange">
-                  info@ghazirestaurant.com
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Hours */}
-          <div>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-orange">
-              Working Hours
-            </h3>
-            <ul className="space-y-2.5 text-sm text-white/70">
-              <li className="flex justify-between gap-4">
-                <span>Sun – Thu</span>
-                <span>11:00 AM – 12:00 AM</span>
-              </li>
-              <li className="flex justify-between gap-4">
-                <span>Fri – Sat</span>
-                <span>1:00 PM – 1:00 AM</span>
-              </li>
-            </ul>
+          <div className="md:pt-1">
+            <p className="text-[15px] font-bold text-white">Faizan Khalid</p>
+            <a
+              href="mailto:fk5095129@gmail.com"
+              className="mt-3 flex items-center gap-3 text-[13px] text-white transition hover:text-white/90"
+            >
+              <IoMailOutline className="h-5 w-5 shrink-0" />
+              <span>fk5095129@gmail.com</span>
+            </a>
+            <a
+              href="tel:+923029655325"
+              className="mt-4 flex items-center gap-3 text-[13px] text-white transition hover:text-white/90"
+            >
+              <MdHeadsetMic className="h-5 w-5 shrink-0" />
+              <span>03029655325</span>
+            </a>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-center text-sm text-white/50">
-          © {new Date().getFullYear()} GHAZI RESTAURANT — مطعم غازي. All rights
-          reserved.
+        <div className="mt-10 border-t border-white/35 pt-5 text-center text-[13px] text-white">
+          All Right Reserved @2026
         </div>
       </div>
     </footer>

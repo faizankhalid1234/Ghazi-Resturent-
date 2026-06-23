@@ -1,10 +1,25 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./context/AuthContext";
+import { MenuProvider } from "./context/MenuContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProductModal from "./components/ProductModal";
+import CartDrawer from "./components/CartDrawer";
 import Home from "./pages/Home";
-import Menu from "./pages/Menu";
+
+const Menu = lazy(() => import("./pages/Menu"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-orange/20 border-t-orange" />
+    </div>
+  );
+}
 
 function PlaceholderPage({ title }) {
   return (
@@ -17,20 +32,29 @@ function PlaceholderPage({ title }) {
 
 function App() {
   return (
-    <CartProvider>
-      <BrowserRouter>
-        <div className="min-h-screen bg-page">
-          <Navbar />
-          <ProductModal />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<Menu />} />
-            <Route path="/offers" element={<PlaceholderPage title="Offers" />} />
-          </Routes>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </CartProvider>
+    <AuthProvider>
+      <MenuProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <div className="min-h-screen bg-page">
+              <Navbar />
+              <ProductModal />
+              <CartDrawer />
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/menu" element={<Menu />} />
+                  <Route path="/offers" element={<PlaceholderPage title="Offers" />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                </Routes>
+              </Suspense>
+              <Footer />
+            </div>
+          </BrowserRouter>
+        </CartProvider>
+      </MenuProvider>
+    </AuthProvider>
   );
 }
 

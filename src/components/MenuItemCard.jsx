@@ -1,23 +1,18 @@
+import { memo } from "react";
 import { useCart } from "../context/CartContext";
 import AddButton from "./AddButton";
-import SheetItemImage from "./SheetItemImage";
 import FoodImage from "./FoodImage";
-import { menuCatalog } from "../data/menuCatalog";
-import { menuSheets } from "../data/menuSheets";
 
 function InfoIcon() {
   return (
-    <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-[#8b9cb8] text-[10px] font-bold text-white">
+    <span className="flex h-[16px] w-[16px] shrink-0 items-center justify-center rounded-full bg-[#8b9cb8] text-[9px] font-bold text-white">
       i
     </span>
   );
 }
 
-function MenuItemCard({ item, categoryId }) {
+function MenuItemCard({ item }) {
   const { openProductModal } = useCart();
-  const items = menuCatalog[categoryId] || [];
-  const index = items.findIndex((i) => i.id === item.id);
-  const useSheet = Boolean(menuSheets[categoryId]);
 
   const handleAdd = () => {
     openProductModal({
@@ -26,56 +21,39 @@ function MenuItemCard({ item, categoryId }) {
       title: item.title,
       price: item.price,
       image: item.image,
-      categoryId,
-      sheetIndex: index,
     });
   };
 
   return (
-    <article className="flex overflow-hidden rounded-[14px] border border-[#eceef3] bg-white shadow-[0_2px_12px_rgba(26,35,64,0.06)] transition hover:shadow-[0_4px_18px_rgba(26,35,64,0.1)]">
-      <div className="h-[118px] w-[118px] shrink-0 sm:h-[130px] sm:w-[130px]">
-        {useSheet && index >= 0 ? (
-          <SheetItemImage
-            categoryId={categoryId}
-            index={index}
-            fallback={item.image}
-            alt={item.title}
-            className="h-full w-full"
-          />
-        ) : (
-          <FoodImage
-            src={item.image}
-            alt={item.title}
-            className="h-full w-full"
-            loading="eager"
-          />
-        )}
+    <article className="flex overflow-hidden rounded-xl border border-[#eceef3] bg-white shadow-[0_2px_8px_rgba(26,35,64,0.05)] transition hover:shadow-[0_3px_14px_rgba(26,35,64,0.08)]">
+      <div className="h-[96px] w-[96px] shrink-0 sm:h-[104px] sm:w-[104px]">
+        <FoodImage src={item.image} alt={item.title} className="h-full w-full" />
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-between p-3.5 sm:p-4">
+      <div className="flex min-w-0 flex-1 flex-col justify-between p-2.5 sm:p-3">
         <div>
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-[13px] font-bold uppercase leading-snug tracking-wide text-navy sm:text-[14px]">
+          <div className="flex items-start justify-between gap-1.5">
+            <h3 className="text-[12px] font-bold uppercase leading-snug tracking-wide text-navy sm:text-[13px]">
               {item.title}
             </h3>
             <InfoIcon />
           </div>
           {item.arabicTitle && (
-            <p className="mt-1 text-[12px] font-medium leading-snug text-navy/80">
+            <p className="mt-0.5 text-[11px] font-medium leading-snug text-navy/80 line-clamp-1">
               {item.arabicTitle}
             </p>
           )}
         </div>
 
-        <div className="mt-auto flex items-end justify-between pt-2">
-          <p className="text-[16px] font-bold text-navy sm:text-[17px]">
+        <div className="mt-auto flex items-end justify-between pt-1.5">
+          <p className="text-[14px] font-bold text-navy sm:text-[15px]">
             {item.price}
           </p>
-          <AddButton onClick={handleAdd} />
+          <AddButton onClick={handleAdd} className="px-2.5 py-1 text-[11px]" />
         </div>
       </div>
     </article>
   );
 }
 
-export default MenuItemCard;
+export default memo(MenuItemCard);

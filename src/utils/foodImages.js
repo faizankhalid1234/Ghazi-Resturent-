@@ -1,6 +1,6 @@
-/** All food images cropped directly from your Ghazi Restaurant screenshots */
-
 import daigiPoster from "../assets/deals/daigi-poster.png";
+import dealHalfPoster from "../assets/menu/deal-half-poster.jpg";
+import dealFullPoster from "../assets/menu/deal-full-poster.jpg";
 
 import r1 from "../assets/menu/r1.jpg";
 import r2 from "../assets/menu/r2.jpg";
@@ -53,8 +53,16 @@ import dealHalf from "../assets/menu/deal-half.jpg";
 import dealFull from "../assets/menu/deal-full.jpg";
 import dealPlatterFull from "../assets/menu/deal-platter-full.jpg";
 import dealPlatterHalf from "../assets/menu/deal-platter-half.jpg";
-import dealHalfPoster from "../assets/menu/deal-half-poster.jpg";
-import dealFullPoster from "../assets/menu/deal-full-poster.jpg";
+
+import catRamadan from "../assets/refs/ramadan.png";
+import catAppetizer from "../assets/refs/appetizer.png";
+import catBarbeque from "../assets/refs/barbeque.png";
+import catJuices from "../assets/refs/juices.png";
+import catChowmien from "../assets/refs/chowmien.png";
+import catShakes from "../assets/refs/shakes.png";
+import catSalad from "../assets/refs/salad.png";
+
+import { dummyImages } from "./dummyImages";
 
 export const foodImages = {
   daigiPoster,
@@ -68,27 +76,31 @@ export const foodImages = {
   c1, c2, c3, c4, c5,
   s1, s2, s3,
   sa1, sa2, sa3, sa4, sa5,
-  dealHalf, dealFull, dealPlatterFull, dealPlatterHalf,
 
-  // category strip thumbnails (first item from each section)
-  catRamadan: r1,
-  catAppetizer: a1,
-  catDeals: dealHalf,
-  catBarbeque: b1,
-  catJuices: j1,
-  catChowmien: c1,
-  catShakes: s1,
-  catSalad: sa1,
+  dealHalf,
+  dealFull,
+  dealPlatterFull,
+  dealPlatterHalf,
 
-  // homepage category tiles
+  catRamadan,
+  catAppetizer,
+  catDeals: dealHalfPoster,
+  catBarbeque,
+  catJuices,
+  catChowmien,
+  catShakes,
+  catSalad,
+
   fries: a1,
   salad: sa1,
-  soup: r4,
+  soup: dummyImages.soup,
   bbq: b1,
-  seafood: b2,
-  rice: dealPlatterFull,
+  seafood: b3,
+  rice: dummyImages.rice,
   chicken: a4,
   mutton: b9,
 };
 
 export const FALLBACK_FOOD = daigiPoster;
+
+export { dummyImages };

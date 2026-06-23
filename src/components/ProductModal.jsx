@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { IoClose, IoInformationCircleOutline } from "react-icons/io5";
 import FoodImage from "./FoodImage";
-import SheetItemImage from "./SheetItemImage";
-import { menuSheets } from "../data/menuSheets";
 import { HiMinus, HiPlus } from "react-icons/hi2";
 import {
   useCart,
@@ -85,24 +83,12 @@ function ProductModal() {
           {/* Product header */}
           <div className="flex gap-4">
             <div className="h-[88px] w-[88px] shrink-0 overflow-hidden rounded-xl border border-gray-border bg-gray-input">
-              {modalProduct.categoryId &&
-              menuSheets[modalProduct.categoryId] &&
-              modalProduct.sheetIndex >= 0 ? (
-                <SheetItemImage
-                  categoryId={modalProduct.categoryId}
-                  index={modalProduct.sheetIndex}
-                  fallback={modalProduct.image}
-                  alt={modalProduct.title}
-                  className="h-full w-full"
-                />
-              ) : (
-                <FoodImage
-                  src={modalProduct.image}
-                  alt={modalProduct.title}
-                  className="h-full w-full"
-                  loading="eager"
-                />
-              )}
+              <FoodImage
+                src={modalProduct.image}
+                alt={modalProduct.title}
+                className="h-full w-full"
+                loading="eager"
+              />
             </div>
             <div className="min-w-0 flex-1 pt-0.5">
               <div className="flex items-start gap-1.5">

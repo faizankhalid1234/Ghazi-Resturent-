@@ -1,14 +1,30 @@
 import { useState } from "react";
 import { getSheetPosition } from "../data/menuSheets";
+import { dummyImages } from "../utils/dummyImages";
 import FoodImage from "./FoodImage";
+
+const DUMMY_BY_CATEGORY = {
+  ramadan: [dummyImages.paratha, dummyImages.paratha, dummyImages.paratha, dummyImages.chana, dummyImages.halwa, dummyImages.omelette, dummyImages.eggFry, dummyImages.lassi],
+  appetizer: [dummyImages.fries, dummyImages.springRolls, dummyImages.chickenWings, dummyImages.chicken, dummyImages.broast, dummyImages.chickenWings],
+  deals: [dummyImages.mandi, dummyImages.mandi, dummyImages.platter, dummyImages.platter],
+  barbeque: [dummyImages.mixGrill, dummyImages.fish, dummyImages.prawn, dummyImages.tikka, dummyImages.tikka, dummyImages.tikka, dummyImages.kebab, dummyImages.tikka, dummyImages.kebab, dummyImages.kebab, dummyImages.kebab, dummyImages.mutton],
+  juices: [dummyImages.cocktail, dummyImages.orangeJuice, dummyImages.lassiDrink, dummyImages.lassiDrink],
+  chowmien: [dummyImages.chowmien, dummyImages.noodles, dummyImages.noodles, dummyImages.chowmien, dummyImages.noodles],
+  shakes: [dummyImages.mangoShake, dummyImages.vanillaShake, dummyImages.chocolateShake],
+  salad: [dummyImages.hummus, dummyImages.gardenSalad, dummyImages.raita, dummyImages.raita, dummyImages.raita],
+};
 
 function SheetItemImage({ categoryId, index, fallback, alt, className = "" }) {
   const pos = getSheetPosition(categoryId, index);
   const [ready, setReady] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  if (!pos) {
+  const dummies = DUMMY_BY_CATEGORY[categoryId];
+  const dummySrc = dummies?.[index] || fallback || dummyImages.default;
+
+  if (!pos || failed) {
     return (
-      <FoodImage src={fallback} alt={alt} className={className} loading="eager" />
+      <FoodImage src={dummySrc} alt={alt} className={className} loading="eager" />
     );
   }
 
@@ -22,6 +38,7 @@ function SheetItemImage({ categoryId, index, fallback, alt, className = "" }) {
         alt={alt}
         draggable={false}
         onLoad={() => setReady(true)}
+        onError={() => setFailed(true)}
         className={`absolute max-w-none select-none transition-opacity duration-300 ${
           ready ? "opacity-100" : "opacity-0"
         }`}

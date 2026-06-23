@@ -44,6 +44,8 @@ function DaigiPosterFromRef({ side }) {
       <img
         src={daigiPosterRef}
         alt=""
+        loading="lazy"
+        decoding="async"
         className="absolute top-0 h-auto max-w-none select-none"
         style={{
           width: "200%",

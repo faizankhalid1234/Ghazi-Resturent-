@@ -1,4 +1,4 @@
-import { foodImages } from "../utils/foodImages";
+import { dummyImages } from "../utils/dummyImages";
 
 export const menuItems = [
   {
@@ -7,7 +7,7 @@ export const menuItems = [
     arabicTitle: "مندي دجاج",
     description: "Slow-cooked aromatic rice with tender chicken.",
     price: "45.00 SAR",
-    image: foodImages.dealHalfPoster,
+    image: dummyImages.mandi,
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const menuItems = [
     arabicTitle: "دجاج مدفون",
     description: "Traditional underground-style chicken with spices.",
     price: "38.00 SAR",
-    image: foodImages.a4,
+    image: dummyImages.chicken,
   },
   {
     id: 3,
@@ -23,7 +23,7 @@ export const menuItems = [
     arabicTitle: "مشكل مشويات",
     description: "Assorted grilled meats with fresh sides.",
     price: "65.00 SAR",
-    image: foodImages.b1,
+    image: dummyImages.mixGrill,
   },
   {
     id: 4,
@@ -31,7 +31,7 @@ export const menuItems = [
     arabicTitle: "وجبة سمك مقلي",
     description: "Crispy golden fried fish with rice and sauce.",
     price: "42.00 SAR",
-    image: foodImages.b2,
+    image: dummyImages.fish,
   },
   {
     id: 5,
@@ -39,7 +39,7 @@ export const menuItems = [
     arabicTitle: "كبسة لحم",
     description: "Fragrant spiced rice topped with tender mutton.",
     price: "55.00 SAR",
-    image: foodImages.b9,
+    image: dummyImages.mutton,
   },
   {
     id: 6,
@@ -47,7 +47,7 @@ export const menuItems = [
     arabicTitle: "سلطة عربية",
     description: "Fresh vegetables with lemon and olive oil.",
     price: "12.00 SAR",
-    image: foodImages.sa2,
+    image: dummyImages.salad,
   },
   {
     id: 7,
@@ -55,7 +55,7 @@ export const menuItems = [
     arabicTitle: "شوربة عدس",
     description: "Warm hearty lentil soup with Arabic spices.",
     price: "10.00 SAR",
-    image: foodImages.r4,
+    image: dummyImages.soup,
   },
   {
     id: 8,
@@ -63,6 +63,6 @@ export const menuItems = [
     arabicTitle: "بروست مقرمش",
     description: "Golden crispy broasted chicken pieces.",
     price: "28.00 SAR",
-    image: foodImages.a3,
+    image: dummyImages.broast,
   },
 ];
