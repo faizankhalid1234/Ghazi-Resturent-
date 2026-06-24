@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { loadAllMenuData } from "../services/foodApi";
+import { mergeMenuWithSite, subscribeSiteUpdated } from "../services/siteStore";
 
 const MenuContext = createContext(null);
 
@@ -9,12 +10,19 @@ const EMPTY = {
   deals: [],
   homeCategories: [],
   menuItems: [],
+  settings: {},
 };
 
 export function MenuProvider({ children }) {
-  const [data, setData] = useState(EMPTY);
+  const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const refreshFromSite = useCallback(() => {
+    if (apiData) {
+      setApiData((prev) => ({ ...prev }));
+    }
+  }, [apiData]);
 
   useEffect(() => {
     let active = true;
@@ -22,7 +30,7 @@ export function MenuProvider({ children }) {
     loadAllMenuData()
       .then((result) => {
         if (active) {
-          setData(result);
+          setApiData(result);
           setError(null);
         }
       })
@@ -37,6 +45,13 @@ export function MenuProvider({ children }) {
       active = false;
     };
   }, []);
+
+  useEffect(() => subscribeSiteUpdated(refreshFromSite), [refreshFromSite]);
+
+  const data = useMemo(() => {
+    if (!apiData) return EMPTY;
+    return mergeMenuWithSite(apiData);
+  }, [apiData]);
 
   const value = useMemo(
     () => ({ ...data, loading, error }),

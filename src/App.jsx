@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
@@ -7,13 +7,16 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProductModal from "./components/ProductModal";
 import CartDrawer from "./components/CartDrawer";
+import OrderStatusAlert from "./components/OrderStatusAlert";
 import InstallPwa from "./components/InstallPwa";
 import PwaUpdateToast from "./components/PwaUpdateToast";
 import Home from "./pages/Home";
+import { bootstrapOrders } from "./services/orderService";
 
 const Menu = lazy(() => import("./pages/Menu"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
+const MyOrders = lazy(() => import("./pages/MyOrders"));
 
 function PageLoader() {
   return (
@@ -32,29 +35,41 @@ function PlaceholderPage({ title }) {
   );
 }
 
+function AppShell() {
+  useEffect(() => {
+    bootstrapOrders();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-page">
+      <Navbar />
+      <ProductModal />
+      <CartDrawer />
+      <OrderStatusAlert />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/offers" element={<PlaceholderPage title="Offers" />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </Suspense>
+      <Footer />
+      <InstallPwa />
+      <PwaUpdateToast />
+    </div>
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
       <MenuProvider>
         <CartProvider>
           <BrowserRouter>
-            <div className="min-h-screen bg-page">
-              <Navbar />
-              <ProductModal />
-              <CartDrawer />
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/menu" element={<Menu />} />
-                  <Route path="/offers" element={<PlaceholderPage title="Offers" />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                </Routes>
-              </Suspense>
-              <Footer />
-              <InstallPwa />
-              <PwaUpdateToast />
-            </div>
+            <AppShell />
           </BrowserRouter>
         </CartProvider>
       </MenuProvider>

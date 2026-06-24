@@ -5,6 +5,7 @@ import { IoMenu, IoClose } from "react-icons/io5";
 import { FaWhatsapp } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import { useMenu } from "../context/MenuContext";
 import { UserMenu, AuthButton } from "./UserMenu";
 import Logo from "./Logo";
 import LanguageDropdown from "./LanguageDropdown";
@@ -13,6 +14,7 @@ import SearchBar from "./SearchBar";
 const navLinks = [
   { to: "/", label: "Home", end: true },
   { to: "/menu", label: "Menu" },
+  { to: "/my-orders", label: "My Orders" },
   { to: "/offers", label: "Offers" },
 ];
 
@@ -44,6 +46,8 @@ function CartButton({ compact = false }) {
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isLoggedIn } = useAuth();
+  const { settings } = useMenu();
+  const whatsapp = settings?.whatsapp || "923029655325";
 
   const linkClass = ({ isActive }) =>
     `text-[15px] font-semibold transition-colors hover:text-orange ${
@@ -61,7 +65,7 @@ function Navbar() {
             <div className="hidden sm:flex items-center gap-2">
               <LanguageDropdown />
               <a
-                href="https://wa.me/923029655325"
+                href={`https://wa.me/${whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-[42px] items-center gap-2 rounded-full bg-green-support px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-green-support-dark"
@@ -111,7 +115,7 @@ function Navbar() {
             <div className="mb-4 flex flex-wrap items-center gap-2.5">
               <LanguageDropdown />
               <a
-                href="https://wa.me/923029655325"
+                href={`https://wa.me/${whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex h-[42px] items-center gap-2 rounded-full bg-green-support px-4 text-sm font-semibold text-white"

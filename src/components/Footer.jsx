@@ -4,6 +4,7 @@ import { IoMailOutline } from "react-icons/io5";
 import { MdHeadsetMic } from "react-icons/md";
 import { Link } from "react-router-dom";
 import BrandIcon from "./BrandIcon";
+import { useMenu } from "../context/MenuContext";
 
 const usefulLinks = [
   { label: "Home", to: "/" },
@@ -18,10 +19,11 @@ const socialLinks = [
 ];
 
 function FooterLogo() {
+  const { settings } = useMenu();
   return (
     <a href="/" className="inline-flex items-center gap-3">
       <span className="text-[22px] font-extrabold uppercase tracking-tight text-white">
-        BHANDU KHAN
+        {settings?.restaurantName || "BHANDU KHAN"}
       </span>
       <BrandIcon size={52} className="shrink-0 rounded-2xl shadow-sm" />
     </a>
@@ -30,6 +32,7 @@ function FooterLogo() {
 
 function Footer() {
   const [email, setEmail] = useState("");
+  const { settings } = useMenu();
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -100,26 +103,26 @@ function Footer() {
 
           {/* Contact */}
           <div className="md:pt-1">
-            <p className="text-[15px] font-bold text-white">Faizan Khalid</p>
+            <p className="text-[15px] font-bold text-white">{settings?.contactName || "Faizan Khalid"}</p>
             <a
-              href="mailto:fk5095129@gmail.com"
+              href={`mailto:${settings?.email || "fk5095129@gmail.com"}`}
               className="mt-3 flex items-center gap-3 text-[13px] text-white transition hover:text-white/90"
             >
               <IoMailOutline className="h-5 w-5 shrink-0" />
-              <span>fk5095129@gmail.com</span>
+              <span>{settings?.email || "fk5095129@gmail.com"}</span>
             </a>
             <a
-              href="tel:+923029655325"
+              href={`tel:+${settings?.whatsapp || "923029655325"}`}
               className="mt-4 flex items-center gap-3 text-[13px] text-white transition hover:text-white/90"
             >
               <MdHeadsetMic className="h-5 w-5 shrink-0" />
-              <span>03029655325</span>
+              <span>{settings?.phone || "03029655325"}</span>
             </a>
           </div>
         </div>
 
         <div className="mt-10 border-t border-white/35 pt-5 text-center text-[13px] text-white">
-          All Right Reserved @2026
+          All Right Reserved @{settings?.copyrightYear || 2026}
         </div>
       </div>
     </footer>

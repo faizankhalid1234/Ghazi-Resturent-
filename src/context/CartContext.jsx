@@ -1,6 +1,19 @@
-import { createContext, useContext, useMemo, useState, useCallback } from "react";
-import { DELIVERY_FEE } from "../data/paymentMethods";
-import { createOrder, saveOrder, processPayment } from "../services/orderService";
+import { createContext, useContext, useMemo, useState, useCallback, useEffect } from "react";
+import { getDeliveryFee, subscribeSiteUpdated } from "../services/siteStore";
+import {
+  createOrderRequest,
+  saveOrder,
+  processPayment,
+  getOrderById,
+  getActiveOrderId,
+  setActiveOrderId,
+  updateOrder,
+  finalizeOrderPayment,
+  canPayForOrder,
+  ORDER_STATUS,
+  subscribeOrdersUpdated,
+  setOrderPollPhone,
+} from "../services/orderService";
 
 const CartContext = createContext(null);
 
@@ -18,7 +31,41 @@ export function CartProvider({ children }) {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartView, setCartView] = useState("cart");
   const [lastOrder, setLastOrder] = useState(null);
+  const [activeOrder, setActiveOrder] = useState(null);
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [deliveryFeeRate, setDeliveryFeeRate] = useState(() => getDeliveryFee());
+
+  useEffect(() => subscribeSiteUpdated(() => setDeliveryFeeRate(getDeliveryFee())), []);
+
+  const refreshActiveOrder = useCallback(() => {
+    const id = getActiveOrderId();
+    if (!id) {
+      setActiveOrder(null);
+      return null;
+    }
+    const order = getOrderById(id);
+    if (!order) {
+      setActiveOrderId(null);
+      setActiveOrder(null);
+      return null;
+    }
+    setActiveOrder(order);
+    return order;
+  }, []);
+
+  useEffect(() => {
+    refreshActiveOrder();
+    return subscribeOrdersUpdated(refreshActiveOrder);
+  }, [refreshActiveOrder]);
+
+  useEffect(() => {
+    const openCheckout = () => {
+      setCartOpen(true);
+      setCartView("checkout");
+    };
+    window.addEventListener("open-checkout-cart", openCheckout);
+    return () => window.removeEventListener("open-checkout-cart", openCheckout);
+  }, []);
 
   const openProductModal = useCallback((product) => {
     setModalProduct(product);
@@ -42,9 +89,9 @@ export function CartProvider({ children }) {
   }, []);
 
   const startCheckout = useCallback(() => {
-    if (!items.length) return;
+    if (!items.length && !activeOrder) return;
     setCartView("checkout");
-  }, [items.length]);
+  }, [items.length, activeOrder]);
 
   const backToCart = useCallback(() => setCartView("cart"), []);
 
@@ -86,7 +133,7 @@ export function CartProvider({ children }) {
     [items]
   );
 
-  const deliveryFee = items.length > 0 ? DELIVERY_FEE : 0;
+  const deliveryFee = items.length > 0 ? deliveryFeeRate : 0;
   const total = subtotal + deliveryFee;
 
   const count = useMemo(
@@ -94,10 +141,48 @@ export function CartProvider({ children }) {
     [items]
   );
 
-  const placeOrder = useCallback(
-    async ({ name, phone, address, paymentMethod, cardNumber, cardExpiry, cardCvv }) => {
+  const submitOrderRequest = useCallback(
+    async ({ name, phone, address }) => {
       if (!items.length) {
         throw new Error("Your cart is empty. Add items before checkout.");
+      }
+
+      setPlacingOrder(true);
+
+      try {
+        const order = createOrderRequest({
+          items,
+          subtotal,
+          deliveryFee,
+          customer: { name, phone, address },
+        });
+
+        saveOrder(order);
+        setActiveOrderId(order.id);
+        setActiveOrder(order);
+        setOrderPollPhone(phone.trim());
+        localStorage.setItem("bk_my_orders_phone", phone.trim());
+        setItems([]);
+      } finally {
+        setPlacingOrder(false);
+      }
+    },
+    [items, subtotal, deliveryFee]
+  );
+
+  const completeOrderPayment = useCallback(
+    async ({ paymentMethod, cardNumber, cardExpiry, cardCvv }) => {
+      const order = refreshActiveOrder() || activeOrder;
+      if (!order) {
+        throw new Error("No active order found. Please submit your order again.");
+      }
+
+      if (order.status === ORDER_STATUS.REJECTED) {
+        throw new Error("Out of stock — your order was rejected by the restaurant.");
+      }
+
+      if (!canPayForOrder(order.status)) {
+        throw new Error("Please wait until the restaurant approves your order.");
       }
 
       setPlacingOrder(true);
@@ -113,35 +198,31 @@ export function CartProvider({ children }) {
           throw new Error("Payment failed. Please try again.");
         }
 
-        const order = createOrder({
-          items,
-          subtotal,
-          deliveryFee,
+        const paidOrder = finalizeOrderPayment(order, {
           paymentMethod,
-          customer: { name, phone, address },
           paymentMeta: {
             ...paymentMeta,
             transactionId: paymentResult.transactionId,
           },
         });
 
-        try {
-          saveOrder(order);
-        } catch {
-          // Still confirm order in UI if storage blocked (e.g. private mode)
-        }
-
-        setLastOrder(order);
-        setItems([]);
+        updateOrder(order.id, paidOrder);
+        setActiveOrderId(null);
+        setActiveOrder(null);
+        setLastOrder(paidOrder);
         setCartView("success");
-      } catch (err) {
-        throw err;
       } finally {
         setPlacingOrder(false);
       }
     },
-    [items, subtotal, deliveryFee]
+    [activeOrder, refreshActiveOrder]
   );
+
+  const clearActiveOrder = useCallback(() => {
+    setActiveOrderId(null);
+    setActiveOrder(null);
+    setCartView("cart");
+  }, []);
 
   return (
     <CartContext.Provider
@@ -164,9 +245,13 @@ export function CartProvider({ children }) {
         cartView,
         startCheckout,
         backToCart,
-        placeOrder,
+        submitOrderRequest,
+        completeOrderPayment,
         placingOrder,
         lastOrder,
+        activeOrder,
+        refreshActiveOrder,
+        clearActiveOrder,
       }}
     >
       {children}

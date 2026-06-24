@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "backend:dev": "npm run dev --prefix backend",
+    "dev:all": "npx concurrently -n api,site,admin -c green,blue,orange \"npm run backend:dev\" \"npm run dev\" \"npm run admin:dev\"",
+    "admin:dev": "npm run dev --prefix admin",
     "build": "npm run pwa:icons && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

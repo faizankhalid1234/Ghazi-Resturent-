@@ -20,14 +20,14 @@ function StepBar({ current }) {
   const idx = STEPS.findIndex((s) => s.key === current);
 
   return (
-    <div className="flex items-center gap-1 border-b border-gray-border bg-page px-5 py-3">
+    <div className="flex items-center gap-0.5 border-b border-gray-border bg-page px-3 py-2.5 sm:gap-1 sm:px-5 sm:py-3">
       {STEPS.map((step, i) => {
         const active = i === idx;
         const done = i < idx;
         return (
-          <div key={step.key} className="flex flex-1 items-center gap-1">
+          <div key={step.key} className="flex min-w-0 flex-1 items-center gap-0.5 sm:gap-1">
             <div
-              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold sm:h-6 sm:w-6 sm:text-[11px] ${
                 active
                   ? "bg-orange text-white"
                   : done
@@ -38,7 +38,7 @@ function StepBar({ current }) {
               {done ? "✓" : i + 1}
             </div>
             <span
-              className={`text-[11px] font-semibold ${
+              className={`hidden truncate text-[10px] font-semibold min-[380px]:inline sm:text-[11px] ${
                 active ? "text-orange" : done ? "text-navy" : "text-gray-muted"
               }`}
             >
@@ -69,6 +69,7 @@ function CartDrawer() {
     cartView,
     startCheckout,
     backToCart,
+    activeOrder,
   } = useCart();
 
   useEffect(() => {
@@ -103,9 +104,9 @@ function CartDrawer() {
         aria-label="Close cart"
       />
 
-      <aside className="absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-white shadow-[-8px_0_40px_rgba(26,35,64,0.15)]">
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-white shadow-[-8px_0_40px_rgba(26,35,64,0.15)] sm:max-w-[440px]">
         {/* Header — always on top */}
-        <div className="shrink-0 border-b border-gray-border bg-white px-4 py-3.5">
+        <div className="shrink-0 border-b border-gray-border bg-white px-3 py-3 sm:px-4 sm:py-3.5">
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2">
               {cartView === "checkout" && (
@@ -119,7 +120,7 @@ function CartDrawer() {
                 </button>
               )}
               <div className="min-w-0">
-                <h2 className="truncate text-[17px] font-bold text-navy">
+                <h2 className="truncate text-[16px] font-bold text-navy sm:text-[17px]">
                   {titles[cartView]}
                 </h2>
                 {cartView === "cart" && (
@@ -154,7 +155,7 @@ function CartDrawer() {
           {cartView === "cart" && (
             <>
               <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-                {items.length === 0 ? (
+                {items.length === 0 && !activeOrder ? (
                   <div className="flex h-full flex-col items-center justify-center py-16 text-center">
                     <span className="text-5xl">🛒</span>
                     <p className="mt-4 text-[16px] font-semibold text-navy">Cart is empty</p>
@@ -167,6 +168,21 @@ function CartDrawer() {
                       className="mt-6 rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white"
                     >
                       Browse Menu
+                    </button>
+                  </div>
+                ) : items.length === 0 && activeOrder ? (
+                  <div className="flex h-full flex-col items-center justify-center py-12 text-center">
+                    <span className="text-4xl">⏳</span>
+                    <p className="mt-4 text-[16px] font-semibold text-navy">Order in progress</p>
+                    <p className="mt-1 text-sm text-gray-muted">
+                      {activeOrder.id} — waiting for restaurant or payment
+                    </p>
+                    <button
+                      type="button"
+                      onClick={startCheckout}
+                      className="mt-6 rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white"
+                    >
+                      Continue Checkout
                     </button>
                   </div>
                 ) : (
@@ -233,27 +249,30 @@ function CartDrawer() {
                 )}
               </div>
 
-              {items.length > 0 && (
-                <div className="shrink-0 border-t border-gray-border bg-white px-4 py-4">
+              {(items.length > 0 || activeOrder) && (
+                <div className="shrink-0 border-t border-gray-border bg-white px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-4 sm:py-4">
                   <div className="mb-2 flex items-center justify-between text-[13px] text-navy">
                     <span>Subtotal</span>
-                    <span>{formatSAR(subtotal)}</span>
+                    <span>{formatSAR(activeOrder?.subtotal ?? subtotal)}</span>
                   </div>
                   <div className="mb-3 flex items-center justify-between text-[13px] text-gray-muted">
                     <span>Delivery fee</span>
-                    <span>{formatSAR(deliveryFee)}</span>
+                    <span>{formatSAR(activeOrder?.deliveryFee ?? deliveryFee)}</span>
                   </div>
                   <div className="mb-4 flex items-center justify-between rounded-xl bg-orange-pale px-3 py-2.5">
                     <span className="text-[14px] font-semibold text-navy">Total</span>
-                    <span className="text-[18px] font-bold text-orange">{formatSAR(total)}</span>
+                    <span className="text-[18px] font-bold text-orange">
+                      {formatSAR(activeOrder?.total ?? total)}
+                    </span>
                   </div>
                   <button
                     type="button"
                     onClick={startCheckout}
                     className="w-full rounded-xl bg-orange py-3.5 text-[15px] font-bold text-white shadow-[0_4px_16px_rgba(249,115,22,0.35)] transition hover:bg-orange-dark"
                   >
-                    Proceed to Checkout
+                    {items.length > 0 ? "Proceed to Checkout" : "Continue Checkout"}
                   </button>
+                  {items.length > 0 && (
                   <button
                     type="button"
                     onClick={clearCart}
@@ -261,6 +280,7 @@ function CartDrawer() {
                   >
                     Clear cart
                   </button>
+                  )}
                 </div>
               )}
             </>

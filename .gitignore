@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 dev-dist
+.data
+backend/data/*.json
 *.local
 .env
 .env.aws
