@@ -9,4 +9,5 @@ export const categories = [
   { id: 6, title: "RICE", arabicTitle: "أرز", image: foodImages.rice },
   { id: 7, title: "CHICKEN", arabicTitle: "دجاج", image: foodImages.chicken },
   { id: 8, title: "MUTTON", arabicTitle: "لحم", image: foodImages.mutton },
+  
 ];
